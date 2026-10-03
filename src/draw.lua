@@ -137,8 +137,47 @@ function Draw.PatchStretched(l, x1, y1, x2, y2, tex)
 	Draw.Quad(l, x1, y1, x2, y2, tex, 0, 0, 0, v2, u2, 0, u2, v2, 1, 1, 1, 1)
 end
 
+-- thin line in Doom screen coords (uses WoW Line regions)
+function Draw.Line(l, x1, y1, x2, y2, r, g, b, a, thickness)
+	local lay = layers[l] or getLayer(l)
+	local n = (lay.ln or 0) + 1
+	lay.ln = n
+	local lines = lay.lines
+	if not lines then lines = {}; lay.lines = lines end
+	local ln = lines[n]
+	if not ln then
+		ln = lay.frame:CreateLine(nil, "ARTWORK")
+		ln:Hide()
+		lines[n] = ln
+	end
+	local px1, py1, px2, py2 = x1 * sx, -y1 * sy, x2 * sx, -y2 * sy
+	if ln.x1 ~= px1 or ln.y1 ~= py1 or ln.x2 ~= px2 or ln.y2 ~= py2 then
+		ln.x1, ln.y1, ln.x2, ln.y2 = px1, py1, px2, py2
+		ln:SetStartPoint("TOPLEFT", lay.frame, px1, py1)
+		ln:SetEndPoint("TOPLEFT", lay.frame, px2, py2)
+	end
+	local th = (thickness or 1) * sx * 0.6
+	if th < 1 then th = 1 end
+	if ln.th ~= th then
+		ln.th = th
+		ln:SetThickness(th)
+	end
+	a = a or 1
+	if ln.r ~= r or ln.g ~= g or ln.b ~= b or ln.a ~= a then
+		ln.r, ln.g, ln.b, ln.a = r, g, b, a
+		ln:SetColorTexture(r, g, b, a)
+	end
+	if not ln.shown then
+		ln.shown = true
+		ln:Show()
+	end
+end
+
 function Draw.Begin()
-	for i = 1, #layerList do layerList[i].n = 0 end
+	for i = 1, #layerList do
+		layerList[i].n = 0
+		layerList[i].ln = 0
+	end
 end
 
 function Draw.End()
@@ -156,6 +195,16 @@ function Draw.End()
 			end
 		end
 		lay.used = n
+		local lines = lay.lines
+		if lines then
+			local ln = lay.ln or 0
+			for j = ln + 1, (lay.lused or 0) do
+				local l = lines[j]
+				if l.shown then l.shown = false; l:Hide() end
+			end
+			lay.lused = ln
+			total = total + ln
+		end
 	end
 	Draw.stats.quads = total
 end
@@ -166,6 +215,10 @@ function Draw.HideAll()
 		for _, t in ipairs(lay.tex) do
 			if t.shown then t.shown = false; t:Hide() end
 		end
+		for _, l in ipairs(lay.lines or {}) do
+			if l.shown then l.shown = false; l:Hide() end
+		end
+		lay.lused, lay.ln = 0, 0
 		lay.used = 0
 		lay.n = 0
 	end

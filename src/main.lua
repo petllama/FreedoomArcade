@@ -48,7 +48,13 @@ local function OnKeyDown(self, key)
 			inp.weapon = n - 1
 			return
 		end
-		if key == "ESCAPE" then
+		if key == "TAB" or key == "M" then
+			D.AM.Toggle()
+		elseif D.AM.active and (key == "=" or key == "+" or key == "EQUALS" or key == "NUMPADPLUS") then
+			D.AM.Zoom(1)
+		elseif D.AM.active and (key == "-" or key == "MINUS" or key == "NUMPADMINUS") then
+			D.AM.Zoom(-1)
+		elseif key == "ESCAPE" then
 			G.OpenMenu()
 		elseif key == "P" or key == "PAUSE" then
 			G.paused = not G.paused
@@ -169,7 +175,7 @@ local function createFrame()
 
 	title = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	title:SetPoint("LEFT", bar, "LEFT", 8, 0)
-	title:SetText("WoWDoom  |cff999999(Esc: menu, P: pause, hold right mouse to turn)|r")
+	title:SetText("WoWDoom  |cff999999(Esc: menu, Tab: map, P: pause, hold right mouse to turn)|r")
 
 	fpsText = bar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	fpsText:SetPoint("RIGHT", bar, "RIGHT", -28, 0)
@@ -192,6 +198,10 @@ local function createFrame()
 			looking = true
 			lastCursorX = GetCursorPosition()
 		end
+	end)
+	view:EnableMouseWheel(true)
+	view:SetScript("OnMouseWheel", function(_, delta)
+		if G.state == "level" and D.AM.active then D.AM.Zoom(delta) end
 	end)
 	view:SetScript("OnMouseUp", function(_, button)
 		if button == "LeftButton" then

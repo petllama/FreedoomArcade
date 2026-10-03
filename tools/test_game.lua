@@ -57,6 +57,16 @@ if script == "default" then
 	press("SPACE")
 	tic(40)
 	shot("g06_more")
+elseif script == "automap" then
+	G.InitNew(2, 1, 1)
+	key("W", true); tic(90); key("W", false)
+	press("TAB"); tic(2)
+	shot("am1_explored")
+	G.player.powers[D.pw_allmap] = 1
+	press("-"); press("-"); tic(2)
+	shot("am2_allmap")
+	press("TAB"); tic(2)
+	shot("am3_back")
 end
 local p = G.player
 print(string.format("state=%s tic=%d pos=(%.1f,%.1f,%.1f) angle=%.1f health=%d ammo=%d kills=%d/%d thinkers=%d quads=%d  cpu=%.2fs",

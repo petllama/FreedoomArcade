@@ -84,6 +84,7 @@ function G.DoLoadLevel()
 	end
 	P.SpawnSpecials()
 	G.state = "level"
+	if D.AM then D.AM.active = false end
 	G.levelstarttic = G.gametic
 	p.message = name
 	if D.Sound then D.Sound.LevelStart() end
@@ -568,10 +569,12 @@ function G.Display()
 	local st = G.state
 	if st == "level" or (st == "menu" and G.menuReturn == "level") then
 		local p = G.player
-		if p.mo then
+		if p.mo and D.AM.active then
+			D.AM.Draw(p)
+		elseif p.mo then
 			R.RenderView(p.mo.x, p.mo.y, p.viewz, p.mo.angle, p.extralight, p.fixedcolormap ~= 0, p)
+			DrawFlash(p)
 		end
-		DrawFlash(p)
 		G.DrawStatusBar()
 		if G.messageTics > 0 and G.messageText then
 			G.DrawText(HUD + 5, 2, 2, G.messageText)

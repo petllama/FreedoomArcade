@@ -12,7 +12,7 @@ It ships with [Freedoom](https://freedoom.github.io/) Phase 1 (all 36 maps).
 
 ## Installing
 
-1. Download `WoWDoom-v0.1.0.zip` from the [latest release](https://github.com/petllama/WoWDoom/releases/latest).
+1. Download `WoWDoom-v0.1.1.zip` from the [latest release](https://github.com/petllama/WoWDoom/releases/latest).
 2. Unzip it and copy the five folders (`WoWDoom`, `WoWDoom_E1` .. `WoWDoom_E4`) into `World of Warcraft/<flavor>/Interface/AddOns/`.
 3. Enable WoWDoom in the AddOns list, log in, and type `/doom`.
 
@@ -53,6 +53,7 @@ Type `/doom` in game.
 | Weapons | 1 – 7 |
 | Walk (always-run is on) | Shift |
 | Pause | P |
+| Automap | Tab or M (zoom with + / - or mouse wheel) |
 | Menu | Esc |
 
 Slash commands:
@@ -80,7 +81,6 @@ luajit tools/bench.lua 1 high    # per-frame cost
 
 - Music
 - Save/load
-- Automap
 - Distance-based sound volume. Distant sounds are culled instead, because WoW can't set per-sound volume.
 
 ## License

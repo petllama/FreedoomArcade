@@ -60,6 +60,19 @@ function Frame:CreateTexture(name, layer)
 	self.textures[#self.textures + 1] = t
 	return t
 end
+local Line = setmetatable({}, { __index = Region })
+Line.__index = Line
+function Line:SetStartPoint(_, _, x, y) self.sx, self.sy = x, y end
+function Line:SetEndPoint(_, _, x, y) self.ex, self.ey = x, y end
+function Line:SetThickness(t) self.th = t end
+function Line:SetColorTexture(r, g, b, a) self.color = { r, g, b, a or 1 } end
+function Frame:CreateLine()
+	creation = creation + 1
+	local l = setmetatable({ parent = self, visible = true, order = creation, isLine = true, th = 1, color = { 1, 1, 1, 1 } }, Line)
+	self.textures[#self.textures + 1] = l
+	return l
+end
+function Frame:EnableMouseWheel() end
 function Frame:CreateFontString() return setmetatable({}, { __index = function() return function() end end }) end
 function Frame:SetFrameLevel(l) self.level = l end
 function Frame:GetFrameLevel() return self.level or 0 end
@@ -159,7 +172,29 @@ function M.Screenshot(root, outPath, W, H)
 			if ix1 > W - 1 then ix1 = W - 1 end
 			if iy1 > H - 1 then iy1 = H - 1 end
 			local vc = t.vc
-			if t.color then
+			if t.isLine then
+				local x1, y1, x2, y2 = t.sx, -t.sy, t.ex, -t.ey
+				local hw = t.th / 2
+				local c = t.color
+				local dx, dy = x2 - x1, y2 - y1
+				local len2 = dx * dx + dy * dy
+				local bx0 = math.max(0, math.floor(math.min(x1, x2) - hw))
+				local bx1 = math.min(W - 1, math.ceil(math.max(x1, x2) + hw))
+				local by0 = math.max(0, math.floor(math.min(y1, y2) - hw))
+				local by1 = math.min(H - 1, math.ceil(math.max(y1, y2) + hw))
+				for y = by0, by1 do
+					for x = bx0, bx1 do
+						local px, py = x + 0.5 - x1, y + 0.5 - y1
+						local tt = len2 > 0 and (px * dx + py * dy) / len2 or 0
+						if tt < 0 then tt = 0 elseif tt > 1 then tt = 1 end
+						local qx, qy = px - tt * dx, py - tt * dy
+						if qx * qx + qy * qy <= hw * hw then
+							local o = (y * W + x) * 3
+							img[o], img[o + 1], img[o + 2] = c[1], c[2], c[3]
+						end
+					end
+				end
+			elseif t.color then
 				local c = t.color
 				for y = iy0, iy1 do
 					for x = ix0, ix1 do
