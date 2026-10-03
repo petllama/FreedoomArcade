@@ -10,6 +10,14 @@ The engine is a hand port of id Software's linuxdoom-1.10 to plain Lua 5.1. It u
 
 It ships with [Freedoom](https://freedoom.github.io/) Phase 1 (all 36 maps).
 
+## Installing
+
+1. Download `WoWDoom-v0.1.0.zip` from the [latest release](https://github.com/petllama/WoWDoom/releases/latest).
+2. Unzip it and copy the five folders (`WoWDoom`, `WoWDoom_E1` .. `WoWDoom_E4`) into `World of Warcraft/<flavor>/Interface/AddOns/`.
+3. Enable WoWDoom in the AddOns list, log in, and type `/doom`.
+
+Everything the game needs is in the zip. The release also has `freedoom1.wad`, the original Freedoom data it was built from, if you want to rebuild the assets yourself.
+
 ## Building
 
 Requirements: Python 3, `ffmpeg` (for sound conversion), and a copy of the linuxdoom source (for the state/thing tables).

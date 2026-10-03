@@ -3,3 +3,4 @@ wad/
 ref/
 shots/
 *.ppm
+dist/
