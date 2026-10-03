@@ -12,7 +12,7 @@ It ships with [Freedoom](https://freedoom.github.io/) Phase 1 (all 36 maps).
 
 ## Installing
 
-1. Download `FreedoomArcade-v0.3.0.zip` from the [latest release](https://github.com/petllama/WoWDoom/releases/latest).
+1. Download `FreedoomArcade-v0.3.0.zip` from the [latest release](https://github.com/petllama/FreedoomArcade/releases/latest).
 2. Unzip it and copy the five folders (`FreedoomArcade`, `FreedoomArcade_E1` .. `FreedoomArcade_E4`) into `World of Warcraft/<flavor>/Interface/AddOns/`.
 3. Enable Freedoom Arcade in the AddOns list, log in, and click the Doom face on your minimap (or type `/arcade`).
 
