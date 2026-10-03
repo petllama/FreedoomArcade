@@ -14,15 +14,7 @@ It ships with [Freedoom](https://freedoom.github.io/) Phase 1 (all 36 maps).
 
 ## How it was made
 
-This project was built with AI. The code was written by Claude (Anthropic's AI model) through Claude Code, directed by [petllama](https://github.com/petllama), who chose the features and tested the addon in the game. Claude wrote:
-
-- the Lua engine port, working from id Software's released source
-- the asset converter
-- the offline WoW API mock and test suite
-- the release pipeline
-- the logo, built from Freedoom's own artwork
-
-Most of the code was tested offline against the mock rather than in the live client. Please report anything that behaves differently in game.
+This project was built with AI. The code was written by Claude (Opus 5.5) via a harness.
 
 ## Installing
 
