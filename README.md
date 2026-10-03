@@ -128,4 +128,4 @@ luajit tools/bench.lua 1 high    # per-frame cost
 
 ## License
 
-Freedoom Arcade was formerly called WoWDoom. The game code is derived from id Software's Doom source and is licensed under the GNU GPL v2 (see `LICENSE`). Freedoom assets are BSD-licensed. The Freedoom WAD and the generated assets are not stored in this repo.
+Freedoom Arcade was formerly called WoWDoom. The game code is derived from id Software's Doom source and is licensed under the GNU GPL v2 (see `LICENSE`). Freedoom assets are BSD-licensed. The Freedoom WAD and the converted assets (textures, sounds, maps) are not committed to the source tree. They are built from the WAD by the release workflow and ship in the addon zip on the [releases page](https://github.com/petllama/FreedoomArcade/releases). Each release also has `freedoom1.wad` and its license attached.
