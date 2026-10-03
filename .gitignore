@@ -1,0 +1,5 @@
+build/
+wad/
+ref/
+shots/
+*.ppm
