@@ -2,7 +2,7 @@
 ## Title: WoWDoom
 ## Notes: Doom (Freedoom) running inside World of Warcraft. Type /doom
 ## Author: petllama
-## Version: 0.1.1
+## Version: 0.2.0
 ## SavedVariables: WoWDoomDB
 
 src\core.lua
@@ -17,5 +17,6 @@ src\p_player.lua
 src\p_spec.lua
 src\game.lua
 src\automap.lua
+src\savegame.lua
 src\sound.lua
 src\main.lua

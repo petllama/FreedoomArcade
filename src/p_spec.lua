@@ -231,7 +231,7 @@ local function T_VerticalDoor(door)
 end
 
 local function newDoor(sec)
-	local door = { think = T_VerticalDoor, sector = sec, topwait = VDOORWAIT, speed = VDOORSPEED, topcountdown = 0, direction = 0, topheight = 0 }
+	local door = { kind = "door", think = T_VerticalDoor, sector = sec, topwait = VDOORWAIT, speed = VDOORSPEED, topcountdown = 0, direction = 0, topheight = 0 }
 	P.AddThinker(door)
 	sec.specialdata = door
 	return door
@@ -393,7 +393,7 @@ local function T_MoveFloor(fl)
 end
 
 local function newFloor(sec)
-	local fl = { think = T_MoveFloor, sector = sec, crush = false, direction = 1, speed = FLOORSPEED, floordestheight = sec.floorheight, newspecial = 0 }
+	local fl = { kind = "floor", think = T_MoveFloor, sector = sec, crush = false, direction = 1, speed = FLOORSPEED, floordestheight = sec.floorheight, newspecial = 0 }
 	P.AddThinker(fl)
 	sec.specialdata = fl
 	return fl
@@ -645,7 +645,7 @@ local function EV_DoPlat(line, ptype, amount)
 		local sec = L.sectors[secnum]
 		if not sec.specialdata then
 			rtn = true
-			local plat = { think = T_PlatRaise, type = ptype, sector = sec, crush = false, tag = line.tag, count = 0, low = sec.floorheight, high = sec.floorheight, wait = 0, speed = PLATSPEED, status = UP }
+			local plat = { kind = "plat", think = T_PlatRaise, type = ptype, sector = sec, crush = false, tag = line.tag, count = 0, low = sec.floorheight, high = sec.floorheight, wait = 0, speed = PLATSPEED, status = UP }
 			P.AddThinker(plat)
 			sec.specialdata = plat
 			if ptype == "raiseToNearestAndChange" then
@@ -770,7 +770,7 @@ local function EV_DoCeiling(line, ctype)
 		local sec = L.sectors[secnum]
 		if not sec.specialdata then
 			rtn = true
-			local c = { think = T_MoveCeiling, sector = sec, crush = false, direction = 0, speed = CEILSPEED, topheight = sec.ceilingheight, bottomheight = sec.floorheight }
+			local c = { kind = "ceiling", think = T_MoveCeiling, sector = sec, crush = false, direction = 0, speed = CEILSPEED, topheight = sec.ceilingheight, bottomheight = sec.floorheight }
 			P.AddThinker(c)
 			sec.specialdata = c
 			if ctype == "fastCrushAndRaise" then
@@ -818,7 +818,7 @@ end
 
 local function SpawnFireFlicker(sector)
 	sector.special = 0
-	P.AddThinker({ think = T_FireFlicker, sector = sector, maxlight = sector.lightlevel,
+	P.AddThinker({ kind = "flicker", think = T_FireFlicker, sector = sector, maxlight = sector.lightlevel,
 		minlight = FindMinSurroundingLight(sector, sector.lightlevel) + 16, count = 4 })
 end
 
@@ -836,7 +836,7 @@ end
 
 local function SpawnLightFlash(sector)
 	sector.special = 0
-	local f = { think = T_LightFlash, sector = sector, maxlight = sector.lightlevel,
+	local f = { kind = "flash", think = T_LightFlash, sector = sector, maxlight = sector.lightlevel,
 		minlight = FindMinSurroundingLight(sector, sector.lightlevel), maxtime = 64, mintime = 7 }
 	f.count = band(P_Random(), f.maxtime) + 1
 	P.AddThinker(f)
@@ -855,7 +855,7 @@ local function T_StrobeFlash(f)
 end
 
 local function SpawnStrobeFlash(sector, fastOrSlow, inSync)
-	local f = { think = T_StrobeFlash, sector = sector, darktime = fastOrSlow, brighttime = STROBEBRIGHT,
+	local f = { kind = "strobe", think = T_StrobeFlash, sector = sector, darktime = fastOrSlow, brighttime = STROBEBRIGHT,
 		maxlight = sector.lightlevel, minlight = FindMinSurroundingLight(sector, sector.lightlevel) }
 	if f.minlight == f.maxlight then f.minlight = 0 end
 	sector.special = 0
@@ -919,7 +919,7 @@ local function T_Glow(g)
 end
 
 local function SpawnGlowingLight(sector)
-	P.AddThinker({ think = T_Glow, sector = sector, minlight = FindMinSurroundingLight(sector, sector.lightlevel),
+	P.AddThinker({ kind = "glow", think = T_Glow, sector = sector, minlight = FindMinSurroundingLight(sector, sector.lightlevel),
 		maxlight = sector.lightlevel, direction = -1 })
 	sector.special = 0
 end
@@ -1303,11 +1303,31 @@ function P.SpawnSpecials()
 		elseif s == 17 then SpawnFireFlicker(sector)
 		end
 	end
+	P.InitLineSpecials()
+	activeplats = {}
+	activeceilings = {}
+	buttons = {}
+end
+
+function P.InitLineSpecials()
+	for k in pairs(R.texturetranslation) do R.texturetranslation[k] = nil end
+	for k in pairs(R.flattranslation) do R.flattranslation[k] = nil end
 	linespecials = {}
 	for i = 0, L.numlines - 1 do
 		if L.lines[i].special == 48 then linespecials[#linespecials + 1] = L.lines[i] end
 	end
-	activeplats = {}
-	activeceilings = {}
-	buttons = {}
+end
+
+------------------------------------------------------------------------ save game support
+P.specialThinks = {
+	door = T_VerticalDoor, floor = T_MoveFloor, plat = T_PlatRaise, ceiling = T_MoveCeiling,
+	flicker = T_FireFlicker, flash = T_LightFlash, strobe = T_StrobeFlash, glow = T_Glow,
+}
+
+function P.GetSpecialLists()
+	return activeplats, activeceilings, buttons
+end
+
+function P.SetSpecialLists(plats, ceilings, btns)
+	activeplats, activeceilings, buttons = plats, ceilings, btns
 end

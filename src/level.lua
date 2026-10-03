@@ -119,6 +119,8 @@ function D.LoadLevelGeometry(mapname)
 			midtexture = tex(ReadName(s, p + 20)),
 			sector = sectors[ReadS16(s, p + 28)],
 		}
+		local sd = sides[i]
+		sd.orig = { sd.textureoffset, sd.rowoffset, sd.toptexture, sd.bottomtexture, sd.midtexture }
 	end
 	L.sides = sides
 
@@ -141,7 +143,7 @@ function D.LoadLevelGeometry(mapname)
 			bbox = {},
 			validcount = 0,
 		}
-		if ld.sidenum[0] == -1 then ld.sidenum[0] = -1 end
+		ld.ospecial, ld.oflags = ld.special, ld.flags
 		if ld.dx == 0 then
 			ld.slopetype = D.ST_VERTICAL
 		elseif ld.dy == 0 then

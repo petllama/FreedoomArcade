@@ -98,6 +98,8 @@ function D.M_Random()
 	rndindex = (rndindex + 1) % 256
 	return rndtable[rndindex + 1]
 end
+function D.GetRandomState() return prndindex, rndindex end
+function D.SetRandomState(p, r) prndindex, rndindex = p, r end
 function D.ClearRandom()
 	prndindex, rndindex = 0, 0
 end

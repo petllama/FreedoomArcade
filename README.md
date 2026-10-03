@@ -12,7 +12,7 @@ It ships with [Freedoom](https://freedoom.github.io/) Phase 1 (all 36 maps).
 
 ## Installing
 
-1. Download `WoWDoom-v0.1.1.zip` from the [latest release](https://github.com/petllama/WoWDoom/releases/latest).
+1. Download `WoWDoom-v0.2.0.zip` from the [latest release](https://github.com/petllama/WoWDoom/releases/latest).
 2. Unzip it and copy the five folders (`WoWDoom`, `WoWDoom_E1` .. `WoWDoom_E4`) into `World of Warcraft/<flavor>/Interface/AddOns/`.
 3. Enable WoWDoom in the AddOns list, log in, and type `/doom`.
 
@@ -54,6 +54,7 @@ Type `/doom` in game.
 | Walk (always-run is on) | Shift |
 | Pause | P |
 | Automap | Tab or M (zoom with + / - or mouse wheel) |
+| Quick save / load | F6 / F9 |
 | Menu | Esc |
 
 Slash commands:
@@ -65,6 +66,8 @@ Slash commands:
 - `/doom sound` toggles sound effects.
 - `/doom fps` shows an FPS counter.
 - `/doom warp e1m5 [skill]` jumps to a map.
+- `/doom save` / `/doom load` quick save and load.
+- `/doom aggro` toggles pause-on-aggro (on by default). When your character enters combat, the game quick-saves, pauses and closes so the keyboard goes back to WoW. `/doom` brings it back, and P resumes.
 
 ## Testing offline
 
@@ -80,7 +83,6 @@ luajit tools/bench.lua 1 high    # per-frame cost
 ## Not implemented
 
 - Music
-- Save/load
 - Distance-based sound volume. Distant sounds are culled instead, because WoW can't set per-sound volume.
 
 ## License

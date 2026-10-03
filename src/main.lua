@@ -6,7 +6,7 @@ local floor = math.floor
 local UI = {}
 D.UI = UI
 
-local defaults = { width = 800, detail = "high", alwaysRun = true, mouseSens = 1.0, sound = true, showFPS = false }
+local defaults = { width = 800, detail = "high", alwaysRun = true, mouseSens = 1.0, sound = true, showFPS = false, aggroPause = true }
 local db
 
 local frame, view, title, fpsText
@@ -14,6 +14,37 @@ local accumulator = 0
 local running = false
 local looking = false
 local lastCursorX
+
+------------------------------------------------------------------------ quick save / load
+function UI.QuickSave(silent)
+	local save, err = G.SaveGame()
+	if not save then
+		if not silent then
+			if G.state == "level" then G.player.message = err end
+			D.Print("can't save: " .. err)
+		end
+		return false
+	end
+	db.quicksave = save
+	if not silent then G.player.message = "Game saved." end
+	return true
+end
+
+function UI.QuickLoad()
+	if not db.quicksave then
+		D.Print("no quicksave yet (F6 saves)")
+		return false
+	end
+	local ok, err = G.LoadGame(db.quicksave)
+	if not ok then
+		D.Print("can't load: " .. tostring(err))
+		return false
+	end
+	G.paused = false
+	G.keepPaused = false
+	G.player.message = "Game loaded."
+	return true
+end
 
 ------------------------------------------------------------------------ input
 local inp = G.input
@@ -48,7 +79,11 @@ local function OnKeyDown(self, key)
 			inp.weapon = n - 1
 			return
 		end
-		if key == "TAB" or key == "M" then
+		if key == "F6" then
+			UI.QuickSave()
+		elseif key == "F9" then
+			UI.QuickLoad()
+		elseif key == "TAB" or key == "M" then
 			D.AM.Toggle()
 		elseif D.AM.active and (key == "=" or key == "+" or key == "EQUALS" or key == "NUMPADPLUS") then
 			D.AM.Zoom(1)
@@ -62,8 +97,16 @@ local function OnKeyDown(self, key)
 		return
 	end
 	if G.state == "level" and G.paused then
-		if key == "P" or key == "PAUSE" or key == "ESCAPE" then G.paused = false end
+		if key == "P" or key == "PAUSE" or key == "ESCAPE" then
+			G.paused = false
+			G.keepPaused = false
+		elseif key == "F9" then
+			UI.QuickLoad()
+		end
 		return
+	end
+	if key == "F9" and (G.state == "menu" or G.state == "title") then
+		if UI.QuickLoad() then return end
 	end
 	if G.state == "menu" then
 		if key == "UP" or key == "W" then G.MenuKey("up")
@@ -175,7 +218,7 @@ local function createFrame()
 
 	title = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	title:SetPoint("LEFT", bar, "LEFT", 8, 0)
-	title:SetText("WoWDoom  |cff999999(Esc: menu, Tab: map, P: pause, hold right mouse to turn)|r")
+	title:SetText("WoWDoom  |cff999999(Esc: menu, Tab: map, F6/F9: quick save/load, P: pause)|r")
 
 	fpsText = bar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	fpsText:SetPoint("RIGHT", bar, "RIGHT", -28, 0)
@@ -232,7 +275,7 @@ function UI.Open()
 	frame:Show()
 	running = true
 	accumulator = 0
-	if G.state == "level" then G.paused = false end
+	if G.state == "level" and not G.keepPaused then G.paused = false end
 end
 
 function UI.Close()
@@ -253,6 +296,8 @@ local function help()
 	D.Print("/doom sound - toggle sound effects")
 	D.Print("/doom fps - toggle fps counter")
 	D.Print("/doom warp <E1M1> [skill 1-5] - jump to a map")
+	D.Print("/doom save | load - quick save / load (F6 / F9 in game)")
+	D.Print("/doom aggro - toggle auto save + pause when you enter combat")
 end
 
 SLASH_WOWDOOM1 = "/doom"
@@ -284,6 +329,14 @@ SlashCmdList.WOWDOOM = function(msg)
 	elseif cmd == "fps" then
 		db.showFPS = not db.showFPS
 		if fpsText then fpsText:SetText("") end
+	elseif cmd == "save" then
+		UI.QuickSave()
+	elseif cmd == "load" then
+		UI.Open()
+		UI.QuickLoad()
+	elseif cmd == "aggro" then
+		db.aggroPause = not db.aggroPause
+		D.Print("pause on aggro: " .. (db.aggroPause and "on" or "off"))
 	elseif cmd == "warp" then
 		local e, m = arg:match("e(%d)m(%d)")
 		local skill = tonumber(arg:match("%s(%d)$") or "3")
@@ -297,9 +350,37 @@ SlashCmdList.WOWDOOM = function(msg)
 end
 
 ------------------------------------------------------------------------ init
+-- entering combat: save, pause and hand the keyboard back to the character
+function UI.OnAggro()
+	if not db or not db.aggroPause then return end
+	if not frame or not frame:IsShown() then return end
+	local saved = false
+	if G.state == "level" then
+		saved = UI.QuickSave(true)
+		G.paused = true
+		G.keepPaused = true
+	end
+	UI.Close()
+	if PlaySound and SOUNDKIT and SOUNDKIT.RAID_WARNING then PlaySound(SOUNDKIT.RAID_WARNING, "Master") end
+	if RaidNotice_AddMessage and RaidWarningFrame then
+		RaidNotice_AddMessage(RaidWarningFrame, "WoWDoom paused - you have aggro!", ChatTypeInfo and ChatTypeInfo["RAID_WARNING"] or { r = 1, g = 0.2, b = 0.2 })
+	end
+	D.Print("you're in combat! Game " .. (saved and "saved and " or "") .. "paused. Type /doom to come back, P to resume.")
+end
+
+function UI.OnCombatEnd()
+	if db and db.aggroPause and G.keepPaused and frame and not frame:IsShown() then
+		D.Print("combat over. Type /doom to get back to Doom.")
+	end
+end
+
 local loader = CreateFrame("Frame")
 loader:RegisterEvent("ADDON_LOADED")
+loader:RegisterEvent("PLAYER_REGEN_DISABLED")
+loader:RegisterEvent("PLAYER_REGEN_ENABLED")
 loader:SetScript("OnEvent", function(self, event, name)
+	if event == "PLAYER_REGEN_DISABLED" then return UI.OnAggro() end
+	if event == "PLAYER_REGEN_ENABLED" then return UI.OnCombatEnd() end
 	if name ~= "WoWDoom" then return end
 	WoWDoomDB = WoWDoomDB or {}
 	db = WoWDoomDB
