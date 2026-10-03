@@ -2,7 +2,7 @@
 ## Title: WoWDoom
 ## Notes: Doom (Freedoom) running inside World of Warcraft. Type /doom
 ## Author: petllama
-## Version: 0.2.1
+## Version: 0.2.2
 ## SavedVariables: WoWDoomDB
 ## IconTexture: Interface\AddOns\WoWDoom\tex\icon
 ## AddonCompartmentFunc: WoWDoom_OnAddonCompartmentClick

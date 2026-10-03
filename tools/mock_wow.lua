@@ -74,6 +74,7 @@ function Frame:CreateLine()
 end
 function Frame:EnableMouseWheel() end
 function Frame:RegisterForClicks() end
+function Frame:IsMouseOver() return false end
 function Frame:SetHighlightTexture() end
 function Frame:LockHighlight() end
 function Frame:UnlockHighlight() end

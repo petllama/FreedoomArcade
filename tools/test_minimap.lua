@@ -28,4 +28,43 @@ SlashCmdList.WOWDOOM("minimap")
 check(b.visible, "and shows it again")
 WoWDoom_OnAddonCompartmentClick()
 check(WoWDoomFrame:IsShown(), "addon compartment click opens the game")
+-- right-click menu
+local G, P = D.G, D.P
+b.scripts.OnClick(b, "RightButton")
+check(WoWDoomMinimapMenu and WoWDoomMinimapMenu:IsShown(), "right-click opens the menu")
+check(D.Minimap._ClickRow("1.  ") == false, "save slot disabled before a game is running")
+G.InitNew(2, 1, 1)
+for i = 1, 60 do G.input.forward = true; G.Ticker() end
+G.input.forward = false
+local x1, y1 = G.player.mo.x, G.player.mo.y
+D.Minimap.ShowMenu()
+check(D.Minimap._ClickRow("1.  ") == true, "save to slot 1")
+check(WoWDoomDB.saves and WoWDoomDB.saves[1] and WoWDoomDB.saves[1].map == 1, "slot 1 stored")
+check(not WoWDoomMinimapMenu:IsShown(), "menu closes after choosing")
+for i = 1, 60 do G.input.right = true; G.input.forward = true; G.Ticker() end
+G.input.right, G.input.forward = false, false
+D.Minimap.ShowMenu()
+D.Minimap._ClickRow("Quick save")
+local qx, qy = G.player.mo.x, G.player.mo.y
+check(WoWDoomDB.quicksave ~= nil and (qx ~= x1 or qy ~= y1), "quick save from the menu")
+for i = 1, 60 do G.input.forward = true; G.Ticker() end
+G.input.forward = false
+D.Minimap.ShowMenu()
+-- load rows come after the "Load slot" header; the second "1.  " row is the load entry
+local loadIndex
+for i, row in ipairs(D.Minimap.menuRows) do
+	if row.kind == "header" and row.text == "Load slot" then loadIndex = i + 1 end
+end
+WoWDoomMinimapMenu.rows[loadIndex]:GetScript("OnClick")(WoWDoomMinimapMenu.rows[loadIndex])
+check(G.player.mo.x == x1 and G.player.mo.y == y1, "load slot 1 restores that position")
+check(WoWDoomFrame:IsShown(), "loading opens the game window")
+local emptyRow = D.Minimap.menuRows[loadIndex + 1]
+D.Minimap.ShowMenu()
+check(D.Minimap.menuRows[loadIndex + 1].enabled == false, "empty load slot 2 is disabled")
+D.Minimap._ClickRow("Quick load")
+check(G.player.mo.x == qx and G.player.mo.y == qy, "quick load from the menu")
+SlashCmdList.WOWDOOM("save 3")
+check(WoWDoomDB.saves[3] ~= nil, "/doom save 3")
+SlashCmdList.WOWDOOM("load 1")
+check(G.player.mo.x == x1, "/doom load 1")
 print(fails == 0 and "ALL OK" or fails .. " failures")

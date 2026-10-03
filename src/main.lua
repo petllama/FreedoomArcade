@@ -16,7 +16,30 @@ local looking = false
 local lastCursorX
 
 ------------------------------------------------------------------------ quick save / load
-function UI.QuickSave(silent)
+UI.NUM_SLOTS = 5
+
+-- slot is "quick" or 1..NUM_SLOTS
+local function slotTable(slot)
+	if slot == "quick" then return db.quicksave end
+	db.saves = db.saves or {}
+	return db.saves[slot]
+end
+
+local function slotName(slot)
+	return slot == "quick" and "quicksave" or ("slot " .. slot)
+end
+
+function UI.SaveInfo(slot)
+	local s = db and slotTable(slot)
+	if not s then return nil end
+	return string.format("E%dM%d  %s", s.episode, s.map, s.time or "")
+end
+
+function UI.CanSave()
+	return G.state == "level" and G.player.mo ~= nil and G.player.playerstate == "live"
+end
+
+function UI.SaveSlot(slot, silent)
 	local save, err = G.SaveGame()
 	if not save then
 		if not silent then
@@ -25,26 +48,39 @@ function UI.QuickSave(silent)
 		end
 		return false
 	end
-	db.quicksave = save
-	if not silent then G.player.message = "Game saved." end
+	if slot == "quick" then
+		db.quicksave = save
+	else
+		db.saves = db.saves or {}
+		db.saves[slot] = save
+	end
+	if not silent then
+		G.player.message = slot == "quick" and "Game saved." or ("Game saved to slot " .. slot .. ".")
+		if not (frame and frame:IsShown()) then D.Print("saved to " .. slotName(slot)) end
+	end
 	return true
 end
 
-function UI.QuickLoad()
-	if not db.quicksave then
-		D.Print("no quicksave yet (F6 saves)")
+function UI.LoadSlot(slot)
+	local s = slotTable(slot)
+	if not s then
+		D.Print(slot == "quick" and "no quicksave yet (F6 saves)" or ("save slot " .. slot .. " is empty"))
 		return false
 	end
-	local ok, err = G.LoadGame(db.quicksave)
+	UI.Open()
+	local ok, err = G.LoadGame(s)
 	if not ok then
 		D.Print("can't load: " .. tostring(err))
 		return false
 	end
 	G.paused = false
 	G.keepPaused = false
-	G.player.message = "Game loaded."
+	G.player.message = slot == "quick" and "Game loaded." or ("Loaded slot " .. slot .. ".")
 	return true
 end
+
+function UI.QuickSave(silent) return UI.SaveSlot("quick", silent) end
+function UI.QuickLoad() return UI.LoadSlot("quick") end
 
 ------------------------------------------------------------------------ input
 local inp = G.input
@@ -297,6 +333,7 @@ local function help()
 	D.Print("/doom fps - toggle fps counter")
 	D.Print("/doom warp <E1M1> [skill 1-5] - jump to a map")
 	D.Print("/doom save | load - quick save / load (F6 / F9 in game)")
+	D.Print("/doom save <1-5> | load <1-5> - save slots (also on the minimap button's right-click menu)")
 	D.Print("/doom aggro - toggle auto save + pause when you enter combat")
 	D.Print("/doom minimap - show or hide the minimap button")
 end
@@ -330,11 +367,10 @@ SlashCmdList.WOWDOOM = function(msg)
 	elseif cmd == "fps" then
 		db.showFPS = not db.showFPS
 		if fpsText then fpsText:SetText("") end
-	elseif cmd == "save" then
-		UI.QuickSave()
-	elseif cmd == "load" then
-		UI.Open()
-		UI.QuickLoad()
+	elseif cmd == "save" or cmd == "load" then
+		local n = tonumber(arg)
+		local slot = (n and n >= 1 and n <= UI.NUM_SLOTS) and floor(n) or "quick"
+		if cmd == "save" then UI.SaveSlot(slot) else UI.LoadSlot(slot) end
 	elseif cmd == "minimap" then
 		D.Minimap.Toggle()
 	elseif cmd == "aggro" then
