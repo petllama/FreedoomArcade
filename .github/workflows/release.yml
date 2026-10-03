@@ -72,8 +72,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" "${{ steps.pkg.outputs.zip }}" dist/freedoom1.wad dist/FREEDOOM-COPYING.txt \
-            --title "Freedoom Arcade ${GITHUB_REF_NAME}" --notes-file dist/notes.md
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            echo "release ${GITHUB_REF_NAME} already exists; refreshing its assets"
+            gh release upload "${GITHUB_REF_NAME}" "${{ steps.pkg.outputs.zip }}" dist/freedoom1.wad dist/FREEDOOM-COPYING.txt --clobber
+          else
+            gh release create "${GITHUB_REF_NAME}" "${{ steps.pkg.outputs.zip }}" dist/freedoom1.wad dist/FREEDOOM-COPYING.txt \
+              --title "Freedoom Arcade ${GITHUB_REF_NAME}" --notes-file dist/notes.md
+          fi
 
       - name: Upload to CurseForge
         env:
@@ -81,9 +86,13 @@ jobs:
           CF_PROJECT_ID: ${{ vars.CF_PROJECT_ID }}
           CF_GAME_VERSIONS: ${{ vars.CF_GAME_VERSIONS }}
         run: |
-          if [ -z "$CF_API_TOKEN" ] || [ -z "$CF_PROJECT_ID" ]; then
-            echo "CF_API_TOKEN secret or CF_PROJECT_ID variable not set; skipping CurseForge upload"
+          if [ -z "$CF_PROJECT_ID" ]; then
+            echo "CF_PROJECT_ID variable not set; skipping CurseForge upload"
             exit 0
+          fi
+          if [ -z "$CF_API_TOKEN" ]; then
+            echo "::error::CF_PROJECT_ID is set but the CF_API_TOKEN secret is missing or empty. Set it with: gh secret set CF_API_TOKEN"
+            exit 1
           fi
           python3 tools/publish_curseforge.py "${{ steps.pkg.outputs.zip }}" "${{ steps.pkg.outputs.version }}" "${{ inputs.release_type || 'release' }}"
 
