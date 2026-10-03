@@ -73,6 +73,15 @@ function Frame:CreateLine()
 	return l
 end
 function Frame:EnableMouseWheel() end
+function Frame:RegisterForClicks() end
+function Frame:SetHighlightTexture() end
+function Frame:LockHighlight() end
+function Frame:UnlockHighlight() end
+function Frame:GetCenter() return 960, 540 end
+function Frame:StartMoving() end
+function Frame:StopMovingOrSizing() end
+function Frame:ClearAllPoints() end
+function Frame:SetPoint(p, rel, rp, x, y) self.px, self.py = x or 0, y or 0 end
 function Frame:CreateFontString() return setmetatable({}, { __index = function() return function() end end }) end
 function Frame:SetFrameLevel(l) self.level = l end
 function Frame:GetFrameLevel() return self.level or 0 end
@@ -101,6 +110,9 @@ UIParent = CreateFrame("Frame")
 UIParent.w, UIParent.h = 1920, 1080
 function UIParent:GetWidth() return 1920 end
 function GetTime() return now end
+Minimap = CreateFrame("Frame")
+Minimap.w, Minimap.h = 140, 140
+GameTooltip = setmetatable({}, { __index = function() return function() end end })
 function M.Advance(dt) now = now + dt end
 function PlaySoundFile() return true end
 function IsShiftKeyDown() return false end
@@ -119,6 +131,7 @@ function LoadAddOn(name)
 end
 C_AddOns = { LoadAddOn = LoadAddOn }
 M.setTextureCalls = 0
+function M.Frames() return allFrames end
 math.atan2 = math.atan2 or math.atan
 
 ------------------------------------------------------------------------ TGA

@@ -298,6 +298,7 @@ local function help()
 	D.Print("/doom warp <E1M1> [skill 1-5] - jump to a map")
 	D.Print("/doom save | load - quick save / load (F6 / F9 in game)")
 	D.Print("/doom aggro - toggle auto save + pause when you enter combat")
+	D.Print("/doom minimap - show or hide the minimap button")
 end
 
 SLASH_WOWDOOM1 = "/doom"
@@ -334,6 +335,8 @@ SlashCmdList.WOWDOOM = function(msg)
 	elseif cmd == "load" then
 		UI.Open()
 		UI.QuickLoad()
+	elseif cmd == "minimap" then
+		D.Minimap.Toggle()
 	elseif cmd == "aggro" then
 		db.aggroPause = not db.aggroPause
 		D.Print("pause on aggro: " .. (db.aggroPause and "on" or "off"))
@@ -389,6 +392,7 @@ loader:SetScript("OnEvent", function(self, event, name)
 	end
 	G.alwaysRun = db.alwaysRun
 	D.Sound.enabled = db.sound
+	if D.Minimap then D.Minimap.Init(db) end
 	self:UnregisterEvent("ADDON_LOADED")
 end)
 

@@ -12,9 +12,9 @@ It ships with [Freedoom](https://freedoom.github.io/) Phase 1 (all 36 maps).
 
 ## Installing
 
-1. Download `WoWDoom-v0.2.0.zip` from the [latest release](https://github.com/petllama/WoWDoom/releases/latest).
+1. Download `WoWDoom-v0.2.1.zip` from the [latest release](https://github.com/petllama/WoWDoom/releases/latest).
 2. Unzip it and copy the five folders (`WoWDoom`, `WoWDoom_E1` .. `WoWDoom_E4`) into `World of Warcraft/<flavor>/Interface/AddOns/`.
-3. Enable WoWDoom in the AddOns list, log in, and type `/doom`.
+3. Enable WoWDoom in the AddOns list, log in, and click the Doom face on your minimap (or type `/doom`).
 
 Everything the game needs is in the zip. The release also has `freedoom1.wad`, the original Freedoom data it was built from, if you want to rebuild the assets yourself.
 
@@ -67,6 +67,7 @@ Slash commands:
 - `/doom fps` shows an FPS counter.
 - `/doom warp e1m5 [skill]` jumps to a map.
 - `/doom save` / `/doom load` quick save and load.
+- `/doom minimap` shows or hides the minimap button. Drag the button to move it around the minimap.
 - `/doom aggro` toggles pause-on-aggro (on by default). When your character enters combat, the game quick-saves, pauses and closes so the keyboard goes back to WoW. `/doom` brings it back, and P resumes.
 
 ## Testing offline

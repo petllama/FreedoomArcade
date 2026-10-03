@@ -218,6 +218,25 @@ for i in range(len(lumps) - 1, -1, -1):
     gi += 1
 print('gfx', gi)
 
+# minimap / addon list icon: the status bar face, scaled 2x on a dark red disc
+face = parse_patch(lump('STFST00'))
+if face:
+    fw, fh, _, _, fimg = face
+    S = 64
+    icon = [[None] * S for _ in range(S)]
+    for y in range(S):
+        for x in range(S):
+            dx, dy = x - 31.5, y - 31.5
+            if dx * dx + dy * dy <= 31.5 * 31.5:
+                icon[y][x] = (60, 8, 8)
+    ox, oy = (S - fw * 2) // 2, (S - fh * 2) // 2 + 1
+    for y in range(fh * 2):
+        for x in range(fw * 2):
+            c = fimg[y // 2][x // 2]
+            if c is not None and 0 <= oy + y < S and 0 <= ox + x < S:
+                icon[oy + y][ox + x] = c
+    write_tga(os.path.join(OUT, 'tex', 'icon.tga'), S, S, icon)
+
 # ---------------------------------------------------------------- sprite defs (R_InitSpriteDefs)
 src_info = open(os.path.join(REF, 'info.c'), encoding='latin1').read()
 sprnames = re.findall(r'"([A-Z0-9]{4})"', src_info[src_info.index('sprnames'):src_info.index('};', src_info.index('sprnames'))])
