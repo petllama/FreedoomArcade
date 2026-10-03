@@ -1,5 +1,5 @@
 -- Automap (am_map.c): top-down line map of the level, toggled with Tab.
-local D = DOOM
+local D = FreedoomArcade
 local AM = {}
 D.AM = AM
 

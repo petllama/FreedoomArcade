@@ -1,6 +1,6 @@
 -- Save games (p_saveg.c equivalent). A save is a plain Lua table (no functions or
 -- cycles) so it can live in SavedVariables. Object references become indices.
-local D = DOOM
+local D = FreedoomArcade
 local G, P = D.G, D.P
 local L = D.level
 local states, mobjinfo = D.states, D.mobjinfo

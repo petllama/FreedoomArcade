@@ -3,7 +3,7 @@
 --   walls and sky  -> one quad per screen column
 --   floors/ceilings -> one quad per horizontal span (texcoords interpolate along the span)
 --   sprites / masked midtextures -> quads clipped into runs of columns, each on its own layer
-local D = DOOM
+local D = FreedoomArcade
 local R = {}
 D.R = R
 

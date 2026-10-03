@@ -1,9 +1,9 @@
 local M = dofile("tools/mock_wow.lua")
-M.LoadAddon("build/WoWDoom", "WoWDoom.toc")
-local D = DOOM
+M.LoadAddon("build/FreedoomArcade", "FreedoomArcade.toc")
+local D = FreedoomArcade
 local G, UI, P, L = D.G, D.UI, D.P, D.level
-WoWDoomDB = { width = 640, detail = "high", alwaysRun = true, mouseSens = 1, sound = true, showFPS = false }
-UI._SetDB(WoWDoomDB)
+FreedoomArcadeDB = { width = 640, detail = "high", alwaysRun = true, mouseSens = 1, sound = true, showFPS = false }
+UI._SetDB(FreedoomArcadeDB)
 UI.Open()
 local function run(n) for _ = 1, n do G.Ticker() end end
 local fails = 0

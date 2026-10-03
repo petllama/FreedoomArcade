@@ -1,6 +1,6 @@
-# WoWDoom
+# Freedoom Arcade
 
-Doom running inside a World of Warcraft addon.
+A World of Warcraft addon that plays Freedoom, a free Doom-engine game, in a window inside the game.
 
 The engine is a hand port of id Software's linuxdoom-1.10 to plain Lua 5.1. It uses floats instead of fixed point, and a renderer that draws with ordinary WoW textures:
 
@@ -12,9 +12,9 @@ It ships with [Freedoom](https://freedoom.github.io/) Phase 1 (all 36 maps).
 
 ## Installing
 
-1. Download `WoWDoom-v0.2.2.zip` from the [latest release](https://github.com/petllama/WoWDoom/releases/latest).
-2. Unzip it and copy the five folders (`WoWDoom`, `WoWDoom_E1` .. `WoWDoom_E4`) into `World of Warcraft/<flavor>/Interface/AddOns/`.
-3. Enable WoWDoom in the AddOns list, log in, and click the Doom face on your minimap (or type `/doom`).
+1. Download `FreedoomArcade-v0.3.0.zip` from the [latest release](https://github.com/petllama/WoWDoom/releases/latest).
+2. Unzip it and copy the five folders (`FreedoomArcade`, `FreedoomArcade_E1` .. `FreedoomArcade_E4`) into `World of Warcraft/<flavor>/Interface/AddOns/`.
+3. Enable Freedoom Arcade in the AddOns list, log in, and click the Doom face on your minimap (or type `/arcade`).
 
 Everything the game needs is in the zip. The release also has `freedoom1.wad`, the original Freedoom data it was built from, if you want to rebuild the assets yourself.
 
@@ -29,19 +29,19 @@ unzip freedoom-0.13.0.zip -d wad
 git clone https://github.com/id-Software/DOOM.git ref/DOOM
 
 # 2. convert the WAD into textures (TGA), sounds (OGG), maps and info tables
-python tools/build_assets.py wad/freedoom-0.13.0/freedoom1.wad build/WoWDoom ref/DOOM/linuxdoom-1.10
+python tools/build_assets.py wad/freedoom-0.13.0/freedoom1.wad build/FreedoomArcade ref/DOOM/linuxdoom-1.10
 
 # 3. copy the Lua sources in
 sh tools/deploy.sh
 ```
 
-Then copy `build/WoWDoom` and `build/WoWDoom_E1` .. `WoWDoom_E4` into `World of Warcraft/<flavor>/Interface/AddOns/`.
+Then copy `build/FreedoomArcade` and `build/FreedoomArcade_E1` .. `FreedoomArcade_E4` into `World of Warcraft/<flavor>/Interface/AddOns/`.
 
-The `WoWDoom_E*` addons hold the map data and load on demand when you enter an episode.
+The `FreedoomArcade_E*` addons hold the map data and load on demand when you enter an episode.
 
 ## Playing
 
-Type `/doom` in game.
+Type `/arcade` (or `/freedoom`, `/arcade`) in game.
 
 | Action | Keys |
 |---|---|
@@ -59,18 +59,45 @@ Type `/doom` in game.
 
 Slash commands:
 
-- `/doom size <400-1600>` sets the window width.
-- `/doom detail high|low` switches between 320 and 160 render columns.
-- `/doom sens <n>` sets mouse turn speed.
-- `/doom run` toggles always-run.
-- `/doom sound` toggles sound effects.
-- `/doom fps` shows an FPS counter.
-- `/doom warp e1m5 [skill]` jumps to a map.
-- `/doom save` / `/doom load` quick save and load.
-- `/doom save <1-5>` / `/doom load <1-5>` use five named save slots.
+- `/arcade size <400-1600>` sets the window width.
+- `/arcade detail high|low` switches between 320 and 160 render columns.
+- `/arcade sens <n>` sets mouse turn speed.
+- `/arcade run` toggles always-run.
+- `/arcade sound` toggles sound effects.
+- `/arcade fps` shows an FPS counter.
+- `/arcade warp e1m5 [skill]` jumps to a map.
+- `/arcade save` / `/arcade load` quick save and load.
+- `/arcade save <1-5>` / `/arcade load <1-5>` use five named save slots.
 - Minimap button: left-click opens or closes the game. Right-click opens a menu with quick save/load and the five save slots, each showing its map and time. Drag the button to move it.
-- `/doom minimap` shows or hides the minimap button.
-- `/doom aggro` toggles pause-on-aggro (on by default). When your character enters combat, the game quick-saves, pauses and closes so the keyboard goes back to WoW. `/doom` brings it back, and P resumes.
+- `/arcade minimap` shows or hides the minimap button.
+- `/arcade aggro` toggles pause-on-aggro (on by default). When your character enters combat, the game quick-saves, pauses and closes so the keyboard goes back to WoW. `/arcade` brings it back, and P resumes.
+
+## Releasing
+
+Releases are automated by `.github/workflows/release.yml`.
+
+1. Bump `## Version` in `src/FreedoomArcade.toc`.
+2. Add a matching `## x.y.z` section to `CHANGELOG.md`.
+3. Push a tag `vx.y.z`.
+
+The workflow then:
+
+1. Downloads Freedoom and id's source.
+2. Builds the assets.
+3. Runs the tests.
+4. Creates the GitHub release.
+5. Uploads the zip to CurseForge.
+
+One-time CurseForge setup:
+
+1. Create the project on CurseForge.
+2. Add the repository **variable** `CF_PROJECT_ID`, the numeric id from the project page.
+3. Add the repository **secret** `CF_API_TOKEN`, from https://authors.curseforge.com/#/settings/api-tokens.
+4. Optionally add the variable `CF_GAME_VERSIONS`, e.g. `12.1.0,1.15.7`, to override the versions read from the toc.
+
+Without the token, the CurseForge upload step is skipped.
+
+`curseforge/` holds the project avatar (made by `tools/make_avatar.py` from Freedoom art) and the project description.
 
 ## Testing offline
 
@@ -90,4 +117,4 @@ luajit tools/bench.lua 1 high    # per-frame cost
 
 ## License
 
-The game code is derived from id Software's Doom source and is licensed under the GNU GPL v2 (see `LICENSE`). Freedoom assets are BSD-licensed. The Freedoom WAD and the generated assets are not stored in this repo.
+Freedoom Arcade was formerly called WoWDoom. The game code is derived from id Software's Doom source and is licensed under the GNU GPL v2 (see `LICENSE`). Freedoom assets are BSD-licensed. The Freedoom WAD and the generated assets are not stored in this repo.

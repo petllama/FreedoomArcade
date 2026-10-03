@@ -1,5 +1,5 @@
 -- Player: pickups & damage (p_inter.c), weapons (p_pspr.c), movement (p_user.c)
-local D = DOOM
+local D = FreedoomArcade
 local P = D.P
 local A = D.actions
 local PA = {}

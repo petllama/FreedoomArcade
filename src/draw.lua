@@ -1,6 +1,6 @@
 -- Draw backend: turns renderer quads into pooled WoW textures.
 -- Coordinates are in Doom's logical 320x200 screen space.
-local D = DOOM
+local D = FreedoomArcade
 local Draw = {}
 D.Draw = Draw
 

@@ -1,8 +1,8 @@
 -- Static render test: luajit tools/test_render.lua MAP out.ppm [angleDegrees]
 local M = dofile("tools/mock_wow.lua")
-for _, f in ipairs({ "src/core.lua", "build/WoWDoom/data/info.lua", "build/WoWDoom/data/assets.lua",
+for _, f in ipairs({ "src/core.lua", "build/FreedoomArcade/data/info.lua", "build/FreedoomArcade/data/assets.lua",
 	"src/level.lua", "src/draw.lua", "src/render.lua" }) do dofile(f) end
-local D = DOOM
+local D = FreedoomArcade
 local map = arg[1] or "E1M1"
 D.EnsureMapLoaded(map)
 local L = D.LoadLevelGeometry(map)

@@ -1,5 +1,5 @@
 -- Game flow (g_game.c), status bar (st_stuff.c), menus, intermission.
-local D = DOOM
+local D = FreedoomArcade
 local G = D.G or {}
 D.G = G
 local P = D.P

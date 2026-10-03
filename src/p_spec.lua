@@ -1,6 +1,6 @@
 -- Sector / line specials: p_spec.c, p_doors.c, p_floor.c, p_plats.c, p_ceilng.c,
 -- p_lights.c, p_switch.c, p_telept.c
-local D = DOOM
+local D = FreedoomArcade
 local P = D.P
 local floor = math.floor
 local band, bor = D.band, D.bor

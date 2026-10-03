@@ -1,10 +1,10 @@
 -- Save/load round trip + aggro handling
 local M = dofile("tools/mock_wow.lua")
-M.LoadAddon("build/WoWDoom", "WoWDoom.toc")
-local D = DOOM
+M.LoadAddon("build/FreedoomArcade", "FreedoomArcade.toc")
+local D = FreedoomArcade
 local G, P, L, UI = D.G, D.P, D.level, D.UI
-WoWDoomDB = { width = 640, detail = "high", alwaysRun = true, mouseSens = 1, sound = true, showFPS = false, aggroPause = true }
-UI._SetDB(WoWDoomDB)
+FreedoomArcadeDB = { width = 640, detail = "high", alwaysRun = true, mouseSens = 1, sound = true, showFPS = false, aggroPause = true }
+UI._SetDB(FreedoomArcadeDB)
 UI.Open()
 local fails = 0
 local function check(c, m) print((c and "PASS " or "FAIL ") .. m); if not c then fails = fails + 1 end end
@@ -70,11 +70,11 @@ local function serialize(v, seen)
 	elseif t == "number" or t == "boolean" then return tostring(v)
 	else error("bad type " .. t) end
 end
-local ok, s = pcall(serialize, WoWDoomDB.quicksave, {})
+local ok, s = pcall(serialize, FreedoomArcadeDB.quicksave, {})
 check(ok, "save serializes cleanly (" .. (ok and #s or 0) .. " bytes)")
 if ok then
 	local reloaded = loadstring("return " .. s)()
-	WoWDoomDB.quicksave = reloaded
+	FreedoomArcadeDB.quicksave = reloaded
 	check(UI.QuickLoad(), "load from re-parsed SavedVariables text")
 	run(10)
 end
@@ -82,15 +82,15 @@ end
 -- aggro
 UI.Open()
 G.paused = false
-check(WoWDoomFrame:IsShown(), "window open before combat")
+check(FreedoomArcadeFrame:IsShown(), "window open before combat")
 UI.OnAggro()
-check(not WoWDoomFrame:IsShown(), "aggro closed the window")
+check(not FreedoomArcadeFrame:IsShown(), "aggro closed the window")
 check(G.paused and G.keepPaused, "aggro paused the game")
 local before = P.leveltime
 UI.Open()
 run(20)
 check(P.leveltime == before and G.paused, "still paused after reopening")
-UI._OnKeyDown(WoWDoomFrame, "P"); UI._OnKeyUp(WoWDoomFrame, "P")
+UI._OnKeyDown(FreedoomArcadeFrame, "P"); UI._OnKeyUp(FreedoomArcadeFrame, "P")
 run(5)
 check(not G.paused and P.leveltime > before, "P resumes")
 print(fails == 0 and "ALL OK" or fails .. " failures")

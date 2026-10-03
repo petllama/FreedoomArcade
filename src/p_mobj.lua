@@ -1,5 +1,5 @@
 -- Things, thinkers, movement and collision: p_tick.c, p_mobj.c, p_maputl.c, p_map.c, p_sight.c
-local D = DOOM
+local D = FreedoomArcade
 local P = D.P or {}
 D.P = P
 

@@ -1,10 +1,10 @@
--- WoWDoom core: shared namespace, math helpers, random, binary decoding.
+-- FreedoomArcade core: shared namespace, math helpers, random, binary decoding.
 -- Doom's 16.16 fixed point is replaced by plain Lua numbers in map units;
 -- angles stay in Doom's BAM convention (0 .. 2^32) so game code ports directly.
-DOOM = DOOM or {}
-local D = DOOM
+FreedoomArcade = FreedoomArcade or {}
+local D = FreedoomArcade
 
-D.ADDON_PATH = "Interface\\AddOns\\WoWDoom\\"
+D.ADDON_PATH = "Interface\\AddOns\\FreedoomArcade\\"
 D.MAPS = D.MAPS or {}
 
 local floor = math.floor
@@ -169,9 +169,9 @@ D.debugLog = {}
 function D.Print(...)
 	local msg = table.concat({ ... }, " ")
 	if DEFAULT_CHAT_FRAME then
-		DEFAULT_CHAT_FRAME:AddMessage("|cffff4040WoWDoom:|r " .. msg)
+		DEFAULT_CHAT_FRAME:AddMessage("|cffff4040Freedoom Arcade:|r " .. msg)
 	else
-		print("WoWDoom: " .. msg)
+		print("Freedoom Arcade: " .. msg)
 	end
 end
 

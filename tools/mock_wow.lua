@@ -1,5 +1,5 @@
 -- Minimal mock of the WoW UI API plus a software rasterizer for the textures it creates.
--- Run under LuaJIT. Lets us screenshot WoWDoom frames offline.
+-- Run under LuaJIT. Lets us screenshot FreedoomArcade frames offline.
 local ffi = require("ffi")
 local M = {}
 local ADDONS = assert(os.getenv("WOWDOOM_ADDONS"), "set WOWDOOM_ADDONS")

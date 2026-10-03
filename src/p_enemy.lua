@@ -1,5 +1,5 @@
 -- Monster AI and monster action functions (p_enemy.c)
-local D = DOOM
+local D = FreedoomArcade
 local P = D.P
 local A = D.actions
 

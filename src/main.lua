@@ -1,5 +1,5 @@
 -- WoW integration: window, keyboard/mouse input, 35Hz game loop, slash commands.
-local D = DOOM
+local D = FreedoomArcade
 local G, R, Draw = D.G, D.R, D.Draw
 local floor = math.floor
 
@@ -230,7 +230,7 @@ local function applyDetail()
 end
 
 local function createFrame()
-	frame = CreateFrame("Frame", "WoWDoomFrame", UIParent)
+	frame = CreateFrame("Frame", "FreedoomArcadeFrame", UIParent)
 	frame:SetFrameStrata("DIALOG")
 	frame:SetToplevel(true)
 	frame:SetPoint("CENTER")
@@ -254,7 +254,7 @@ local function createFrame()
 
 	title = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	title:SetPoint("LEFT", bar, "LEFT", 8, 0)
-	title:SetText("WoWDoom  |cff999999(Esc: menu, Tab: map, F6/F9: quick save/load, P: pause)|r")
+	title:SetText("Freedoom Arcade  |cff999999(Esc: menu, Tab: map, F6/F9: quick save/load, P: pause)|r")
 
 	fpsText = bar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 	fpsText:SetPoint("RIGHT", bar, "RIGHT", -28, 0)
@@ -338,8 +338,10 @@ local function help()
 	D.Print("/doom minimap - show or hide the minimap button")
 end
 
-SLASH_WOWDOOM1 = "/doom"
-SlashCmdList.WOWDOOM = function(msg)
+SLASH_FREEDOOMARCADE1 = "/arcade"
+SLASH_FREEDOOMARCADE2 = "/freedoom"
+SLASH_FREEDOOMARCADE3 = "/doom"
+SlashCmdList.FREEDOOMARCADE = function(msg)
 	msg = (msg or ""):lower()
 	local cmd, arg = msg:match("^(%S*)%s*(.-)$")
 	if cmd == "" then
@@ -402,7 +404,7 @@ function UI.OnAggro()
 	UI.Close()
 	if PlaySound and SOUNDKIT and SOUNDKIT.RAID_WARNING then PlaySound(SOUNDKIT.RAID_WARNING, "Master") end
 	if RaidNotice_AddMessage and RaidWarningFrame then
-		RaidNotice_AddMessage(RaidWarningFrame, "WoWDoom paused - you have aggro!", ChatTypeInfo and ChatTypeInfo["RAID_WARNING"] or { r = 1, g = 0.2, b = 0.2 })
+		RaidNotice_AddMessage(RaidWarningFrame, "Freedoom Arcade paused - you have aggro!", ChatTypeInfo and ChatTypeInfo["RAID_WARNING"] or { r = 1, g = 0.2, b = 0.2 })
 	end
 	D.Print("you're in combat! Game " .. (saved and "saved and " or "") .. "paused. Type /doom to come back, P to resume.")
 end
@@ -420,9 +422,9 @@ loader:RegisterEvent("PLAYER_REGEN_ENABLED")
 loader:SetScript("OnEvent", function(self, event, name)
 	if event == "PLAYER_REGEN_DISABLED" then return UI.OnAggro() end
 	if event == "PLAYER_REGEN_ENABLED" then return UI.OnCombatEnd() end
-	if name ~= "WoWDoom" then return end
-	WoWDoomDB = WoWDoomDB or {}
-	db = WoWDoomDB
+	if name ~= "FreedoomArcade" then return end
+	FreedoomArcadeDB = FreedoomArcadeDB or {}
+	db = FreedoomArcadeDB
 	for k, v in pairs(defaults) do
 		if db[k] == nil then db[k] = v end
 	end

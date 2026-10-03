@@ -1,6 +1,6 @@
 -- Minimap button (no libraries): left-click opens/closes the game, drag to move it
 -- around the minimap edge. Also hooks the retail addon compartment if present.
-local D = DOOM
+local D = FreedoomArcade
 local MM = {}
 D.Minimap = MM
 
@@ -36,7 +36,7 @@ end
 
 local function showTooltip(self)
 	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-	GameTooltip:AddLine("WoWDoom")
+	GameTooltip:AddLine("Freedoom Arcade")
 	GameTooltip:AddLine("|cffffffffLeft-click|r to open or close", 0.8, 0.8, 0.8)
 	GameTooltip:AddLine("|cffffffffRight-click|r for save / load", 0.8, 0.8, 0.8)
 	GameTooltip:AddLine("|cffffffffDrag|r to move this button", 0.8, 0.8, 0.8)
@@ -45,7 +45,7 @@ local function showTooltip(self)
 end
 
 local function create()
-	button = CreateFrame("Button", "WoWDoomMinimapButton", Minimap)
+	button = CreateFrame("Button", "FreedoomArcadeMinimapButton", Minimap)
 	button:SetSize(31, 31)
 	button:SetFrameStrata("MEDIUM")
 	button:SetFrameLevel(8)
@@ -118,9 +118,9 @@ end
 local function buildRows()
 	local UI = D.UI
 	local rows = {}
-	local open = WoWDoomFrame and WoWDoomFrame:IsShown()
+	local open = FreedoomArcadeFrame and FreedoomArcadeFrame:IsShown()
 	local canSave = UI.CanSave()
-	addRow(rows, "title", "WoWDoom")
+	addRow(rows, "title", "Freedoom Arcade")
 	addRow(rows, "item", open and "Close game" or "Open game", function() UI.Toggle() end)
 	addRow(rows, "item", "Quick save  |cff888888(F6)|r", function() UI.SaveSlot("quick") end, canSave)
 	local qi = UI.SaveInfo("quick")
@@ -143,7 +143,7 @@ local function buildRows()
 end
 
 local function createMenu()
-	menu = CreateFrame("Frame", "WoWDoomMinimapMenu", UIParent)
+	menu = CreateFrame("Frame", "FreedoomArcadeMinimapMenu", UIParent)
 	menu:SetFrameStrata("FULLSCREEN_DIALOG")
 	menu:SetClampedToScreen(true)
 	menu:EnableMouse(true)
@@ -157,7 +157,7 @@ local function createMenu()
 	bg:SetColorTexture(0.08, 0.02, 0.02, 0.97)
 	menu.rows = {}
 	-- Escape closes it
-	if UISpecialFrames then table.insert(UISpecialFrames, "WoWDoomMinimapMenu") end
+	if UISpecialFrames then table.insert(UISpecialFrames, "FreedoomArcadeMinimapMenu") end
 	-- clicking anywhere else closes it
 	pcall(menu.RegisterEvent, menu, "GLOBAL_MOUSE_DOWN")
 	menu:SetScript("OnEvent", function(self)
@@ -239,6 +239,6 @@ function MM._ClickRow(match)
 end
 
 -- retail addon compartment (## AddonCompartmentFunc in the toc)
-function WoWDoom_OnAddonCompartmentClick()
+function FreedoomArcade_OnAddonCompartmentClick()
 	D.UI.Toggle()
 end

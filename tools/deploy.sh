@@ -1,8 +1,9 @@
 #!/bin/sh
-# Copy sources into build/WoWDoom (assets are produced by build_assets.py)
+# Copy sources into build/FreedoomArcade (assets are produced by build_assets.py)
 set -e
-mkdir -p build/WoWDoom/src
-cp src/*.lua build/WoWDoom/src/
-cp src/WoWDoom.toc build/WoWDoom/
-cp wad/freedoom-0.13.0/COPYING.txt build/WoWDoom/FREEDOOM-COPYING.txt
-echo "built build/WoWDoom"
+mkdir -p build/FreedoomArcade/src
+cp src/*.lua build/FreedoomArcade/src/
+cp src/FreedoomArcade.toc build/FreedoomArcade/
+cp wad/freedoom-0.13.0/COPYING.txt build/FreedoomArcade/FREEDOOM-COPYING.txt
+cp LICENSE build/FreedoomArcade/LICENSE.txt
+echo "built build/FreedoomArcade"

@@ -1,5 +1,5 @@
--- Level loading (p_setup.c): decodes the map lumps shipped in WoWDoom_E? addons.
-local D = DOOM
+-- Level loading (p_setup.c): decodes the map lumps shipped in FreedoomArcade_E? addons.
+local D = FreedoomArcade
 local ReadS16, ReadU16, ReadName = D.ReadS16, D.ReadU16, D.ReadName
 local floor = math.floor
 
@@ -31,7 +31,7 @@ end
 
 function D.EpisodeAddon(mapname)
 	local e = mapname:match("^E(%d)M%d$")
-	if e then return "WoWDoom_E" .. e end
+	if e then return "FreedoomArcade_E" .. e end
 end
 
 function D.EnsureMapLoaded(mapname)

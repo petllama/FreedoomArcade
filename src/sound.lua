@@ -1,6 +1,6 @@
 -- Sound effects through PlaySoundFile. WoW can't set per-sound volume, so distant
 -- sounds are culled instead of attenuated (Doom's clipping distance is 1200 units).
-local D = DOOM
+local D = FreedoomArcade
 local Sound = {}
 D.Sound = Sound
 

@@ -1,8 +1,8 @@
 local M = dofile("tools/mock_wow.lua")
-M.LoadAddon("build/WoWDoom", "WoWDoom.toc")
-local D = DOOM
-WoWDoomDB = { width = 640, detail = "high", alwaysRun = true, mouseSens = 1, sound = true, showFPS = false }
-D.UI._SetDB(WoWDoomDB); D.UI.Open()
+M.LoadAddon("build/FreedoomArcade", "FreedoomArcade.toc")
+local D = FreedoomArcade
+FreedoomArcadeDB = { width = 640, detail = "high", alwaysRun = true, mouseSens = 1, sound = true, showFPS = false }
+D.UI._SetDB(FreedoomArcadeDB); D.UI.Open()
 local worst, wname = 0
 for ep = 1, 4 do
 	local t = os.clock(); D.EnsureMapLoaded("E" .. ep .. "M1"); local lt = os.clock() - t

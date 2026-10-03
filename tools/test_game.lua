@@ -1,21 +1,21 @@
 -- Headless game test through the WoW mock.
 -- luajit tools/test_game.lua <script> ; script is a list of "tics action" lines
 local M = dofile("tools/mock_wow.lua")
-M.LoadAddon("build/WoWDoom", "WoWDoom.toc")
-local D = DOOM
+M.LoadAddon("build/FreedoomArcade", "FreedoomArcade.toc")
+local D = FreedoomArcade
 local G, UI = D.G, D.UI
 -- fire ADDON_LOADED
 for _, f in ipairs({}) do end
-WoWDoomDB = { width = 640, detail = "high", alwaysRun = true, mouseSens = 1, sound = true, showFPS = false }
-UI._SetDB(WoWDoomDB)
+FreedoomArcadeDB = { width = 640, detail = "high", alwaysRun = true, mouseSens = 1, sound = true, showFPS = false }
+UI._SetDB(FreedoomArcadeDB)
 
 UI.Open()
-local frame = WoWDoomFrame
+local frame = FreedoomArcadeFrame
 local shotN = 0
 local function shot(name)
 	shotN = shotN + 1
 	local view
-	-- find the view frame: child of WoWDoomFrame with clip
+	-- find the view frame: child of FreedoomArcadeFrame with clip
 	M.Screenshot(nil, "shots/" .. name .. ".ppm", 640, 480 + 24)
 end
 
