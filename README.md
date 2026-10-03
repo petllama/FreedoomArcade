@@ -1,5 +1,7 @@
 # Freedoom Arcade
 
+![Freedoom Arcade](curseforge/logo.png)
+
 A World of Warcraft addon that plays Freedoom, a free Doom-engine game, in a window inside the game.
 
 The engine is a hand port of id Software's linuxdoom-1.10 to plain Lua 5.1. It uses floats instead of fixed point, and a renderer that draws with ordinary WoW textures:
@@ -97,7 +99,12 @@ One-time CurseForge setup:
 
 Without the token, the CurseForge upload step is skipped.
 
-`curseforge/` holds the project avatar (made by `tools/make_avatar.py` from Freedoom art) and the project description.
+`curseforge/` holds the project description and the art:
+
+- `logo_square.png` / `avatar.png` (400x400 project avatar)
+- `logo.png` (1200x400 banner)
+
+Both images are made by `tools/make_logo.py` from Freedoom's logo, big font and face.
 
 ## Testing offline
 
